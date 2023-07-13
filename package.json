@@ -1,0 +1,27 @@
+{
+    "name": "tour-of-heroes-server",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "node ./bin/www",
+        "start-dev": "nodemon ./bin/www"
+    },
+    "dependencies": {
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "debug": "~4.3.4",
+        "express": "^4.18.2",
+        "express-validator": "^7.0.1",
+        "http-errors": "^2.0.0",
+        "mongoose": "^7.3.4",
+        "morgan": "^1.10.0",
+        "path": "^0.12.7"
+    },
+    "devDependencies": {
+        "dotenv": "^16.3.1",
+        "eslint": "^8.44.0",
+        "eslint-config-prettier": "^8.8.0",
+        "nodemon": "^3.0.1",
+        "prettier": "^3.0.0"
+    }
+}
