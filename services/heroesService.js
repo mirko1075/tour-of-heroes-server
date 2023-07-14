@@ -17,50 +17,50 @@ class HeroesService {
 
     /**
      * Add a new hero item
-     * @param {*} Id The Id of Hero
+     * @param {*} id The Id of Hero
      */
-    async getHero(Id) {
-        const data = await Heroes.findOne({ Id: Id })
+    async getHero(id) {
+        const data = await Heroes.findOne({ id: id })
         return data
     }
 
     /**
      * Delete a hero item
-     * @param {*} Id The Id of Hero
+     * @param {*} id The Id of Hero
      */
-    async deleteHero(Id) {
-        const data = await Heroes.findOneAndDelete({ Id: Id })
+    async deleteHero(id) {
+        const data = await Heroes.findOneAndDelete({ id: id })
         return data
     }
 
     /**
      * Add a new hero item
-     * @param {*} Id The Id of Hero
-     * @param {*} Name The Name of the Hero
+     * @param {*} id The Id of Hero
+     * @param {*} name The name of the Hero
      */
-    async addHero(Id, Name) {
-        const existentHero = await this.getHero(Id)
+    async addHero(id, name) {
+        const existentHero = await this.getHero(id)
         if (existentHero) throw new Error('Id already present in DB')
         const data = await Heroes.create({
-            Id,
-            Name,
+            id,
+            name,
         })
         return data
     }
 
     /**
      * Update a hero item
-     * @param {*} Id The Id of Hero
-     * @param {*} Name The Name of the Hero
+     * @param {*} id The Id of Hero
+     * @param {*} name The name of the Hero
      */
-    async putHero(heroId, { Id, Name }) {
-        if (Id !== '' && Id !== heroId) {
-            const existentHero = await this.getHero(Id)
+    async putHero(heroid, { id, name }) {
+        if (id !== '' && id !== heroid) {
+            const existentHero = await this.getHero(id)
             if (existentHero) throw new Error('Id already present in DB')
         }
         const data = await Heroes.findOneAndUpdate(
-            { Id: heroId },
-            { Id, Name },
+            { id: heroid },
+            { id, name },
             {
                 returnDocument: 'after',
             }

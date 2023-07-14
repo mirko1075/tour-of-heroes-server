@@ -3,8 +3,10 @@ const { Schema } = mongoose
 
 const heroesSchema = new Schema(
     {
-        Id: String,
-        Name: String,
+        id: String,
+        name: String,
+        description: String,
+        imageUrl: String,
     },
     {
         timestamps: {

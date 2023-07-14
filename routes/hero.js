@@ -3,6 +3,7 @@ const createError = require('http-errors')
 const { check, validationResult } = require('express-validator')
 const router = express.Router()
 
+
 module.exports = (params) => {
     const { heroService } = params
     // GET '/heroes' Get all heroes
@@ -47,7 +48,7 @@ module.exports = (params) => {
     router.put(
         '/:heroId',
         [
-            check('Name')
+            check('name')
                 .trim()
                 .isLength({ min: 8, max: 50 })
                 .escape()
@@ -61,10 +62,10 @@ module.exports = (params) => {
                     return res.json({ errors: errors.array() })
                 }
                 const heroId = req.params.heroId
-                const { Id, Name } = req.body
+                const { Id, name } = req.body
                 const heroFound = await heroService.puthero(heroId, {
                     Id,
-                    Name,
+                    name,
                 })
                 if (heroFound) res.status(200).json(heroFound)
                 else res.status(204).send('No data found')
@@ -78,16 +79,16 @@ module.exports = (params) => {
     router.post(
         '/',
         [
-            check('Id')
+            check('id')
                 .trim()
                 .isLength({ min: 2, max: 4 })
                 .escape()
                 .withMessage('A Id is required'),
-            check('Name')
+            check('name')
                 .trim()
                 .isLength({ min: 8, max: 50 })
                 .escape()
-                .withMessage('A Id is required'),
+                .withMessage('A name is required'),
         ],
         async (req, res, next) => {
             try {
@@ -96,8 +97,8 @@ module.exports = (params) => {
                 if (!errors.isEmpty()) {
                     return res.status(500).json({ errors: errors.array() })
                 }
-                const { Id, Name } = req.body
-                const heroesList = await heroService.addhero(Id, Name)
+                const { Id, name } = req.body
+                const heroesList = await heroService.addhero(Id, name)
                 if (heroesList) res.status(201).json(heroesList)
                 else res.status(204).send('No data found')
             } catch (error) {
