@@ -6,7 +6,7 @@ const logger = require('morgan')
 const cors = require('cors')
 
 const indexRouter = require('./routes/index')
-const dutiesRouter = require('./routes/hero')
+const heroesRouter = require('./routes/hero')
 
 const HeroesService = require('./services/heroesService')
 const heroService = new HeroesService()
@@ -25,7 +25,7 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/api', indexRouter())
-app.use('/api/heroes', dutiesRouter({ heroService }))
+app.use('/api/heroes', heroesRouter({ heroService }))
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
