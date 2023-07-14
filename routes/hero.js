@@ -9,8 +9,9 @@ module.exports = (params) => {
     // GET '/heroes' Get all heroes
     router.get('/', async (req, res, next) => {
         try {
-            console.log('Get heroes list')
-            const heroesList = await heroService.getList()
+            console.log('req.query', req.query)
+            const options = JSON.parse(req.query.filter || null);
+            const heroesList = await heroService.getList(options)
             if (heroesList) res.status(200).json(heroesList)
             else res.status(204).send('No data found')
         } catch (error) {
@@ -23,7 +24,7 @@ module.exports = (params) => {
         try {
             console.log('Get hero detail')
             const heroId = req.params.heroId
-            const heroFound = await heroService.gethero(heroId)
+            const heroFound = await heroService.getHero(heroId)
             if (heroFound) res.status(200).json(heroFound)
             else res.status(204).send('No data found')
         } catch (error) {
@@ -36,7 +37,7 @@ module.exports = (params) => {
         try {
             console.log('Get hero detail')
             const heroId = req.params.heroId
-            const heroFound = await heroService.deletehero(heroId)
+            const heroFound = await heroService.deleteHero(heroId)
             if (heroFound) res.status(200).json(heroFound)
             else res.status(204).send('No data found')
         } catch (error) {
@@ -52,7 +53,7 @@ module.exports = (params) => {
                 .trim()
                 .isLength({ min: 8, max: 50 })
                 .escape()
-                .withMessage('A Id is required'),
+                .withMessage('A Name is required'),
         ],
         async (req, res, next) => {
             try {
@@ -62,10 +63,9 @@ module.exports = (params) => {
                     return res.json({ errors: errors.array() })
                 }
                 const heroId = req.params.heroId
-                const { Id, name } = req.body
-                const heroFound = await heroService.puthero(heroId, {
-                    Id,
-                    name,
+                const { name, description, imageUrl, powerstats } = req.body
+                const heroFound = await heroService.putHero(heroId, {
+                    name, description, imageUrl, powerstats
                 })
                 if (heroFound) res.status(200).json(heroFound)
                 else res.status(204).send('No data found')
@@ -79,26 +79,20 @@ module.exports = (params) => {
     router.post(
         '/',
         [
-            check('id')
-                .trim()
-                .isLength({ min: 2, max: 4 })
-                .escape()
-                .withMessage('A Id is required'),
             check('name')
                 .trim()
                 .isLength({ min: 8, max: 50 })
                 .escape()
-                .withMessage('A name is required'),
+                .withMessage('A name is required and must be longer than 8 Chars'),
         ],
         async (req, res, next) => {
             try {
-                console.log('Add hero')
                 const errors = validationResult(req)
                 if (!errors.isEmpty()) {
                     return res.status(500).json({ errors: errors.array() })
                 }
-                const { Id, name } = req.body
-                const heroesList = await heroService.addhero(Id, name)
+                const { name, description, imageUrl, powerstats } = req.body
+                const heroesList = await heroService.addHero( name, description, imageUrl, powerstats)
                 if (heroesList) res.status(201).json(heroesList)
                 else res.status(204).send('No data found')
             } catch (error) {

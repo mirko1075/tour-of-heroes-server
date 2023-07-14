@@ -3,10 +3,17 @@ const { Schema } = mongoose
 
 const heroesSchema = new Schema(
     {
-        id: String,
         name: String,
         description: String,
         imageUrl: String,
+        powerstats: {
+            intelligence: Number,
+            strength: Number,
+            speed: Number,
+            durability: Number,
+            power: Number,
+            combat: Number
+        },
     },
     {
         timestamps: {
