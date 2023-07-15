@@ -29,11 +29,9 @@ DELETE /api/heroes/:id
 PUT /api/heroes/:id
 
 ## Authentication
-Brief description of the authentication mechanism used in your API, if applicable.
-
+No authentication
 ## Database
-Brief description of the database used in your API, if applicable.
-
+MongodB Cloud hosted
 ## Error Handling
 Brief explanation of how errors are handled in your API and any error codes/messages used.
 
