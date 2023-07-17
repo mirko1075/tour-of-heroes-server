@@ -5,7 +5,7 @@ const heroesSchema = new Schema(
   {
     name: String,
     description: String,
-    imageUrl: String,
+    imageName: String,
     powerstats: {
       intelligence: Number,
       strength: Number,

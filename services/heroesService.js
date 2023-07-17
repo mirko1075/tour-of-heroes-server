@@ -43,16 +43,16 @@ class HeroesService {
    * Add a new hero item
    * @param {*} name The name of the Hero
    * @param {*} description The description of the Hero
-   * @param {*} imageUrl The imageUrl of the Hero
+   * @param {*} imageName The imageName of the Hero
    * @param {*} powerstats The powerstats of the Hero
    */
-  async addHero(name, description, imageUrl, powerstats) {
+  async addHero(name, description, imageName, powerstats) {
     const existentHero = await this.getHeroByName(name)
     if (existentHero) throw new Error('Name already present in DB')
     const data = await Heroes.create({
       name,
       description,
-      imageUrl,
+      imageName,
       powerstats,
     })
     return data
@@ -63,7 +63,7 @@ class HeroesService {
    * @param {*} heroId The Id of Hero
    * @param {*} details The details of the Hero
    */
-  async putHero(heroId, { name, description, imageUrl, powerstats }) {
+  async putHero(heroId, { name, description, imageName, powerstats }) {
     if (name !== '') {
       const existentHero = await this.getHeroByName(name)
       if (existentHero && heroId !== existentHero.id)
@@ -73,7 +73,7 @@ class HeroesService {
     }
     const data = await Heroes.findOneAndUpdate(
       { _id: heroId },
-      { name, description, imageUrl, powerstats },
+      { name, description, imageName, powerstats },
       {
         returnDocument: 'after',
       }

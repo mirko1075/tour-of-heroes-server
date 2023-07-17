@@ -1,4 +1,6 @@
 const express = require('express')
+const fs = require('fs')
+const path = require('path')
 const createError = require('http-errors')
 const { check, validationResult } = require('express-validator')
 const router = express.Router()
@@ -10,8 +12,18 @@ module.exports = (params) => {
     try {
       console.log('req.query', req.query)
       const options = JSON.parse(req.query.filter || null)
-      const heroesList = await heroService.getList(options)
-      if (heroesList) res.status(200).json(heroesList)
+      let heroesList = await heroService.getList(options)
+      heroesList = heroesList.map((heroFound) => {
+        const imageName = heroFound.imageName
+        const imagePath = path.join(__dirname, '../public/images', imageName)
+        const imageExists = fs.existsSync(imagePath)
+        const heroWithImage = {
+          ...heroFound._doc,
+          imageUrl: imageExists ? `/images/${imageName}` : null,
+        }
+        return heroWithImage
+      })
+      if (heroesList?.length) res.status(200).json(heroesList)
       else res.status(204).send('No data found')
     } catch (error) {
       next(createError(error))
@@ -21,11 +33,22 @@ module.exports = (params) => {
   // GET '/heroes/:heroId' Get all heroes
   router.get('/:heroId', async (req, res, next) => {
     try {
-      console.log('Get hero detail')
       const heroId = req.params.heroId
       const heroFound = await heroService.getHero(heroId)
-      if (heroFound) res.status(200).json(heroFound)
-      else res.status(204).send('No data found')
+      if (!heroFound) {
+        res.status(204).send('No data found')
+        return
+      }
+
+      const imageName = heroFound.imageName
+      const imagePath = path.join(__dirname, '../public/images', imageName)
+      const imageExists = fs.existsSync(imagePath)
+      // Add the image URL to the hero details
+      const heroWithImage = {
+        ...heroFound._doc,
+        imageUrl: imageExists ? `/images/${imageName}` : null,
+      }
+      res.status(200).json(heroWithImage)
     } catch (error) {
       next(createError(error))
     }
@@ -62,11 +85,11 @@ module.exports = (params) => {
           return res.json({ errors: errors.array() })
         }
         const heroId = req.params.heroId
-        const { name, description, imageUrl, powerstats } = req.body
+        const { name, description, imageName, powerstats } = req.body
         const heroFound = await heroService.putHero(heroId, {
           name,
           description,
-          imageUrl,
+          imageName,
           powerstats,
         })
         if (heroFound) res.status(200).json(heroFound)
@@ -93,11 +116,11 @@ module.exports = (params) => {
         if (!errors.isEmpty()) {
           return res.status(500).json({ errors: errors.array() })
         }
-        const { name, description, imageUrl, powerstats } = req.body
+        const { name, description, imageName, powerstats } = req.body
         const heroesList = await heroService.addHero(
           name,
           description,
-          imageUrl,
+          imageName,
           powerstats
         )
         if (heroesList) res.status(201).json(heroesList)

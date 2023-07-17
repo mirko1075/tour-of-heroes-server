@@ -7,6 +7,7 @@ const cors = require('cors')
 
 const indexRouter = require('./routes/index')
 const heroesRouter = require('./routes/hero')
+const uploadRouter = require('./routes/upload')
 
 const HeroesService = require('./services/heroesService')
 const heroService = new HeroesService()
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', indexRouter())
 app.use('/api', indexRouter())
+app.use('/api/upload', uploadRouter())
 app.use('/api/heroes', heroesRouter({ heroService }))
 
 // catch 404 and forward to error handler
