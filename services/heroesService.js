@@ -11,7 +11,6 @@ class HeroesService {
    * Get all Heroes items
    */
   async getList(options) {
-    console.log('options', options)
     const data = await Heroes.find(options)
     return data
   }

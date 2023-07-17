@@ -9,7 +9,6 @@ const upload = multer({
       cb(null, 'public/images') // Destination folder for saving the images
     },
     filename: function (req, file, cb) {
-      console.log('__dirname', __dirname)
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
       const extname = path.extname(file.originalname)
       cb(null, 'img-' + uniqueSuffix + extname) // Unique filename for each uploaded image
@@ -19,6 +18,7 @@ const upload = multer({
 module.exports = (params) => {
   router.post('/', upload.single('image'), (req, res) => {
     const imageName = req.file.filename
+    console.log('imageName', imageName)
     res.status(200).json({ imageName })
   })
   return router

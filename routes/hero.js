@@ -1,6 +1,4 @@
 const express = require('express')
-const fs = require('fs')
-const path = require('path')
 const createError = require('http-errors')
 const { check, validationResult } = require('express-validator')
 const router = express.Router()
@@ -10,19 +8,9 @@ module.exports = (params) => {
   // GET '/heroes' Get all heroes
   router.get('/', async (req, res, next) => {
     try {
-      console.log('req.query', req.query)
+      console.log('Get hero list')
       const options = JSON.parse(req.query.filter || null)
       let heroesList = await heroService.getList(options)
-      heroesList = heroesList.map((heroFound) => {
-        const imageName = heroFound.imageName
-        const imagePath = path.join(__dirname, '../public/images', imageName)
-        const imageExists = fs.existsSync(imagePath)
-        const heroWithImage = {
-          ...heroFound._doc,
-          imageUrl: imageExists ? `/images/${imageName}` : null,
-        }
-        return heroWithImage
-      })
       if (heroesList?.length) res.status(200).json(heroesList)
       else res.status(204).send('No data found')
     } catch (error) {
@@ -33,6 +21,7 @@ module.exports = (params) => {
   // GET '/heroes/:heroId' Get all heroes
   router.get('/:heroId', async (req, res, next) => {
     try {
+      console.log('Get hero detail')
       const heroId = req.params.heroId
       const heroFound = await heroService.getHero(heroId)
       if (!heroFound) {
@@ -40,15 +29,7 @@ module.exports = (params) => {
         return
       }
 
-      const imageName = heroFound.imageName
-      const imagePath = path.join(__dirname, '../public/images', imageName)
-      const imageExists = fs.existsSync(imagePath)
-      // Add the image URL to the hero details
-      const heroWithImage = {
-        ...heroFound._doc,
-        imageUrl: imageExists ? `/images/${imageName}` : null,
-      }
-      res.status(200).json(heroWithImage)
+      res.status(200).json(heroFound)
     } catch (error) {
       next(createError(error))
     }
@@ -57,7 +38,7 @@ module.exports = (params) => {
   // GET '/heroes/:heroId' Get all heroes
   router.delete('/:heroId', async (req, res, next) => {
     try {
-      console.log('Get hero detail')
+      console.log('Delete hero')
       const heroId = req.params.heroId
       const heroFound = await heroService.deleteHero(heroId)
       if (heroFound) res.status(200).json(heroFound)
